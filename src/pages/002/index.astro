@@ -12,19 +12,6 @@ import Layout from "../../layouts/Layout.astro";
             >
             </div>
         </div>
-        <script>
-            document
-                .querySelector(".card")
-                ?.addEventListener("mousemove", (event: MouseEvent) => {
-                    const target = event.currentTarget as HTMLElement;
-                    const rect = target.getBoundingClientRect();
-                    const x = event.clientX - rect.left;
-                    const y = event.clientY - rect.top;
-
-                    target.style.setProperty("--mouse-x", `${x}px`);
-                    target.style.setProperty("--mouse-y", `${y}px`);
-                });
-        </script>
     </main>
 </Layout>
 
@@ -32,8 +19,48 @@ import Layout from "../../layouts/Layout.astro";
     .gradient {
         background: radial-gradient(
             500px circle at var(--mouse-x) var(--mouse-y),
-            rgba(90, 90, 90, 0.6),
+            rgba(51, 51, 51, 0.6),
             transparent 40%
         );
     }
 </style>
+
+<script>
+    document
+        .querySelector(".card")
+        ?.addEventListener("touchmove", (event: TouchEvent) => {
+            event.preventDefault();
+
+            const target = event.currentTarget as HTMLElement;
+            const rect = target.getBoundingClientRect();
+            const touch = event.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            target.style.setProperty("--mouse-x", `${x}px`);
+            target.style.setProperty("--mouse-y", `${y}px`);
+        });
+    document
+        .querySelector(".card")
+        ?.addEventListener("mousemove", (event: MouseEvent) => {
+            const target = event.currentTarget as HTMLElement;
+            const rect = target.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            target.style.setProperty("--mouse-x", `${x}px`);
+            target.style.setProperty("--mouse-y", `${y}px`);
+        });
+    document
+        .querySelector(".gradient")
+        ?.addEventListener("touchend", (event) => {
+            const target = event.currentTarget as HTMLElement;
+            target.style.opacity = "0";
+        });
+    document
+        .querySelector(".gradient")
+        ?.addEventListener("touchstart", (event) => {
+            const target = event.currentTarget as HTMLElement;
+            target.style.opacity = "100%";
+        });
+</script>
