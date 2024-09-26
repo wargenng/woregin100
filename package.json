@@ -1,21 +1,21 @@
 {
-  "name": "onehundred",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/tailwind": "^5.1.1",
-    "astro": "^4.15.9",
-    "tailwindcss": "^3.4.13",
-    "three": "^0.169.0"
-  },
-  "devDependencies": {
-    "@types/three": "^0.169.0"
-  }
+    "name": "onehundred",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev",
+        "start": "astro dev --host",
+        "build": "astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@astrojs/tailwind": "^5.1.1",
+        "astro": "^4.15.9",
+        "tailwindcss": "^3.4.13",
+        "three": "^0.169.0"
+    },
+    "devDependencies": {
+        "@types/three": "^0.169.0"
+    }
 }
