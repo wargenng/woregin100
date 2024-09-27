@@ -37,19 +37,13 @@ import Layout from "../layouts/Layout.astro";
             background-position: 0% 0%;
         }
         100% {
-            background-position: 100% 100%;
+            background-position: -100% 100%;
         }
     }
     body {
-        background: repeating-linear-gradient(
-            45deg,
-            #f1f1ef,
-            #f1f1ef 10px,
-            #d8d8d3 10px,
-            #d8d8d3 20px
-        );
-        background-size: 200% 200%;
-        animation: pan 25s linear infinite;
+        background-image: radial-gradient(#4d4d4d 10%, transparent 10%);
+        background-size: 20px 20px;
+        animation: pan 125s linear infinite;
     }
     .overlay {
         position: absolute;
