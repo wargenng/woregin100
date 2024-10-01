@@ -1,0 +1,51 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+// website used for blob: https://app.haikei.app/
+---
+
+<script>
+    import KUTE from "kute.js";
+
+    const tween = KUTE.fromTo(
+        "#blob1",
+        { path: "#blob1" },
+        { path: "#blob2" },
+        { repeat: 999, duration: 5000, yoyo: true }
+    ).start();
+</script>
+
+<Layout title="007 | Blob">
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-2"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+            id="blob"
+        >
+            <svg
+                id="visual"
+                viewBox="0 0 900 900"
+                width="900"
+                height="900"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                version="1.1"
+            >
+                <g transform="translate(479.93686829576626 495.89961687235314)"
+                    ><path
+                        id="blob1"
+                        d="M218.5 -219.5C277.7 -159.3 316.3 -79.7 320.7 4.4C325.1 88.4 295.1 176.8 235.9 214.3C176.8 251.8 88.4 238.4 15.4 223C-57.5 207.5 -115 190 -190 152.5C-265 115 -357.5 57.5 -377 -19.4C-396.4 -96.4 -342.8 -192.8 -267.8 -253C-192.8 -313.1 -96.4 -337.1 -8.4 -328.7C79.7 -320.3 159.3 -279.7 218.5 -219.5"
+                        fill="#000000"></path></g
+                >
+                <g transform="translate(390.3358266793548 391.74363875080735)"
+                    ><path
+                        id="blob2"
+                        style="visibility: hidden;"
+                        d="M182.5 -145C257.5 -107.5 353.7 -53.7 353.6 -0.1C353.5 53.5 257 107 182 175.3C107 243.7 53.5 326.8 -0.4 327.2C-54.2 327.5 -108.4 245.1 -151.9 176.8C-195.4 108.4 -228.2 54.2 -233.5 -5.3C-238.8 -64.8 -216.6 -129.6 -173.1 -167.1C-129.6 -204.6 -64.8 -214.8 -5.5 -209.3C53.7 -203.7 107.5 -182.5 182.5 -145"
+                        fill="#000000"></path></g
+                >
+            </svg>
+        </div>
+    </main>
+</Layout>
