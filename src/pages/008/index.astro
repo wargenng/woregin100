@@ -1,0 +1,21 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="008 | Interactive">
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-2"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+            id="interactive"
+        >
+            <script src="../../scripts/interactive.js"></script>
+        </div>
+        <div class="w-96 text-black/50 flex gap-2 touch-manipulation">
+            <button class="hover:underline hover:text-black" id="restart"
+                >restart</button
+            >
+        </div>
+    </main>
+</Layout>
