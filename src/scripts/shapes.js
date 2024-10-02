@@ -1,6 +1,7 @@
 import Matter from "matter-js";
 
 const canvasSize = 380;
+const wallSize = 10;
 
 const engine = Matter.Engine.create();
 
@@ -30,18 +31,30 @@ const createInitialBox = () => {
 };
 
 const walls = [
-    Matter.Bodies.rectangle(canvasSize / 2, 0, canvasSize, 10, {
+    Matter.Bodies.rectangle(canvasSize / 2, -wallSize, canvasSize, wallSize, {
         isStatic: true,
     }),
-    Matter.Bodies.rectangle(canvasSize / 2, canvasSize, canvasSize, 10, {
+    Matter.Bodies.rectangle(
+        canvasSize / 2,
+        canvasSize + wallSize,
+        canvasSize,
+        wallSize,
+        {
+            isStatic: true,
+        }
+    ),
+    Matter.Bodies.rectangle(-wallSize, canvasSize / 2, wallSize, canvasSize, {
         isStatic: true,
     }),
-    Matter.Bodies.rectangle(0, canvasSize / 2, 10, canvasSize, {
-        isStatic: true,
-    }),
-    Matter.Bodies.rectangle(canvasSize, canvasSize / 2, 10, canvasSize, {
-        isStatic: true,
-    }),
+    Matter.Bodies.rectangle(
+        canvasSize + wallSize,
+        canvasSize / 2,
+        wallSize,
+        canvasSize,
+        {
+            isStatic: true,
+        }
+    ),
 ];
 
 // Initial box
