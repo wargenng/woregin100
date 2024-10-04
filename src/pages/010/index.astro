@@ -1,0 +1,16 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="010 | Waves">
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-2"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+        >
+            <canvas id="waves" class="w-full h-full"></canvas>
+            <script src="../../scripts/waves.js"></script>
+        </div>
+    </main>
+</Layout>
