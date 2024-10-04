@@ -1,8 +1,17 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+export const frontmatter = {
+    pubDate: "9/27/2024",
+    title: "Greeting",
+    description: "A 3D Text demo page.",
+};
+const day = Astro.url.pathname.split("/")[1];
 ---
 
-<Layout title="003 | Greeting" description="003">
+<Layout
+    title=`${day} | ${frontmatter.title}`
+    description=`${frontmatter.description}`
+>
     <main class="w-screen h-dvh flex items-center justify-center">
         <div
             class="absolute w-96 h-96 border border-black flex items-center justify-center"

@@ -1,19 +1,25 @@
 ---
 import Layout from "../layouts/Layout.astro";
+const pages = import.meta.glob("./*/*.astro", { eager: true });
 
-// Create an array of link objects
-const links = [
-    { href: "/001", text: "001 Cube" },
-    { href: "/002", text: "002 Gradient" },
-    { href: "/003", text: "003 Greeting" },
-    { href: "/004", text: "004 Pattern" },
-    { href: "/005", text: "005 Gravity" },
-    { href: "/006", text: "006 Shapes" },
-    { href: "/007", text: "007 Blob" },
-    { href: "/008", text: "008 Interactive" },
-    { href: "/009", text: "009 Swirl" },
-    { href: "/010", text: "010 Waves" },
-];
+interface Frontmatter {
+    day: string;
+    title: string;
+}
+
+interface PageModule {
+    frontmatter: Frontmatter;
+}
+
+const links = Object.entries(pages).map(([path, mod]) => {
+    const page = mod as PageModule;
+    const href = path.replace(".", "").replace("/index.astro", "");
+    const text = `${href.replace("/", "")} ${page.frontmatter?.title}`;
+    return {
+        href: href,
+        text: text,
+    };
+});
 ---
 
 <Layout title="100" description="100">
