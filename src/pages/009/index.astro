@@ -1,0 +1,16 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="009 | Swirl">
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-2"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+        >
+            <canvas id="swirl" class="w-full h-full"></canvas>
+            <script src="../../scripts/swirl.js"></script>
+        </div>
+    </main>
+</Layout>
