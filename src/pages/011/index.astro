@@ -1,0 +1,129 @@
+---
+import Layout from "../../layouts/Layout.astro";
+export const frontmatter = {
+    pubDate: "10/5/2024",
+    title: "Hidden",
+    description: "Dragging ball over text will change it's color.",
+};
+
+const day = Astro.url.pathname.split("/")[1];
+---
+
+<Layout
+    title=`${day} | ${frontmatter.title}`
+    description=`${frontmatter.description}`
+>
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-2"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center overflow-hidden text-2xl"
+        >
+            <p class="">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
+                sequi nesciunt nemo dolor, mollitia esse ipsum quo. Laborum
+                dignissimos id iure voluptatibus repellat nemo eaque voluptas
+                sunt doloribus, ducimus officiis quidem. Hic aspernatur
+                veritatis perferendis deserunt placeat voluptates tempora
+                nesciunt illum facere libero? Vel, reprehenderit odit aperiam
+                dignissimos ex nulla!
+            </p>
+            <div
+                id="draggable"
+                class="w-52 h-52 absolute flex items-center justify-center overflow-hidden cursor-grab bg-black rounded-full"
+            >
+                <p class="text-white w-96 h-96 flex fixed" id="pattern">
+                    The paragraph, though present, remains completely hidden
+                    from view. Wrapped in layers of visual obscurity, its
+                    contents are cleverly concealed, blending seamlessly with
+                    the background. No trace of its words can be seen, as if the
+                    text has vanished into thin air, unnoticed by the casual
+                    observer. Yet, it exists silently, awaiting its moment to
+                    reappear when light, interaction, or movement finally brings
+                    it back into focus. Until then, it lingers in the shadows,
+                    quietly blending with its surroundings, almost as if it were
+                    never there at all.
+                </p>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<script>
+    const draggable = document.getElementById("draggable");
+    const pattern = document.getElementById("pattern");
+
+    let isDragging = false;
+    let startX,
+        startY,
+        initialX = 0,
+        initialY = 0;
+
+    // Initialize the positions on page load
+    function initializePositions() {
+        // Set initial transform for both draggable and pattern
+        draggable.style.transform = `translate(${initialX}px, ${initialY}px)`;
+        pattern.style.transform = `translate(${-initialX}px, ${-initialY}px)`;
+    }
+
+    function startDragging(x, y) {
+        isDragging = true;
+        draggable.style.cursor = "grabbing";
+        startX = x;
+        startY = y;
+
+        const transform = window.getComputedStyle(draggable).transform;
+
+        if (transform !== "none") {
+            const matrix = transform.match(/matrix.*\((.+)\)/)[1].split(", ");
+            initialX = parseFloat(matrix[4]);
+            initialY = parseFloat(matrix[5]);
+        } else {
+            initialX = 0;
+            initialY = 0;
+        }
+    }
+
+    function drag(x, y) {
+        if (!isDragging) return;
+
+        const dx = x - startX;
+        const dy = y - startY;
+
+        draggable.style.transform = `translate(${initialX + dx}px, ${initialY + dy}px)`;
+        pattern.style.transform = `translate(${-1 * (initialX + dx)}px, ${-1 * (initialY + dy)}px)`;
+    }
+
+    function stopDragging() {
+        isDragging = false;
+        draggable.style.cursor = "grab";
+    }
+
+    // Add event listeners for dragging
+    draggable.addEventListener("mousedown", (e) => {
+        startDragging(e.clientX, e.clientY);
+        e.preventDefault();
+    });
+
+    window.addEventListener("mousemove", (e) => {
+        drag(e.clientX, e.clientY);
+    });
+
+    window.addEventListener("mouseup", stopDragging);
+
+    draggable.addEventListener("touchstart", (e) => {
+        const touch = e.touches[0];
+        startDragging(touch.clientX, touch.clientY);
+        e.preventDefault();
+    });
+
+    window.addEventListener("touchmove", (e) => {
+        const touch = e.touches[0];
+        drag(touch.clientX, touch.clientY);
+    });
+
+    window.addEventListener("touchend", stopDragging);
+
+    // Initialize positions on page load
+    window.addEventListener("load", initializePositions);
+</script>
