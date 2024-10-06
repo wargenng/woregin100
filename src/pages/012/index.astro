@@ -1,0 +1,26 @@
+---
+import Layout from "../../layouts/Layout.astro";
+export const frontmatter = {
+    pubDate: "10/6/2024",
+    title: "Lava Lamp",
+    description: "2D Blobs simulate a lavalamp.",
+};
+
+const day = Astro.url.pathname.split("/")[1];
+---
+
+<Layout
+    title=`${day} | ${frontmatter.title}`
+    description=`${frontmatter.description}`
+>
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-2"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+        >
+            <canvas id="lavalamp" class="w-full h-full"></canvas>
+            <script src="../../scripts/lavalamp.js"></script>
+        </div>
+    </main>
+</Layout>
