@@ -198,7 +198,7 @@ class TextItem {
         this.text = new paper.PointText({
             point: position.add(offset),
             content: content,
-            fillColor: "#add8e6",
+            fillColor: "#0F0F0F",
             fontFamily: "Merriweather",
             fontSize: 140,
             justification: "center",
