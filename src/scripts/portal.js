@@ -26,6 +26,7 @@ function initSimulation() {
             height: canvasSize,
             background: "#f1f1ef",
             wireframes: false,
+            pixelRatio: "auto",
         },
     });
 

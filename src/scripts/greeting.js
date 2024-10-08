@@ -62,9 +62,3 @@ function animate() {
     requestAnimationFrame(animate);
 }
 animate();
-
-window.addEventListener("resize", onWindowResize);
-
-function onWindowResize() {
-    renderer.setSize(innerWidth, innerHeight);
-}
