@@ -13,6 +13,7 @@ const render = Matter.Render.create({
         height: canvasSize,
         background: "#f1f1ef",
         wireframes: false,
+        pixelRatio: "auto"
     },
 });
 
