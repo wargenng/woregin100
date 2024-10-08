@@ -1,0 +1,26 @@
+---
+import Layout from "../../layouts/Layout.astro";
+export const frontmatter = {
+    pubDate: "10/8/2024",
+    title: "Pointer",
+    description: "2D Triangles point at mouse position",
+};
+
+const day = Astro.url.pathname.split("/")[1];
+---
+
+<Layout
+    title=`${day} | ${frontmatter.title}`
+    description=`${frontmatter.description}`
+>
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-2"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+            id="pointer"
+        >
+            <script src="../../scripts/pointer.js"></script>
+        </div>
+    </main>
+</Layout>
