@@ -22,11 +22,10 @@ const imageUrls = [
     "https://images.unsplash.com/photo-1531040630173-7cfb894c8eaa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzV8fGNhdHxlbnwwfDF8MHx8fDI%3D",
 ];
 
-let currentImageIndex = Math.round(Math.random(0, 1) * imageUrls.length) - 1;
+let currentImageIndex = Math.floor(Math.random() * imageUrls.length);
 const images = [];
 let imagesLoaded = 0;
 
-// Load all images
 imageUrls.forEach((url) => {
     const img = new Image();
     img.crossOrigin = "Anonymous";
