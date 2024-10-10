@@ -1,9 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 export const frontmatter = {
-    pubDate: "10/9/2024",
-    title: "Follow",
-    description: "2D circle will follow mouse around",
+    pubDate: "10/10/2024",
+    title: "Picture",
+    description:
+        "2D Blob displays a picture and when clicked will change picture",
 };
 
 const day = Astro.url.pathname.split("/")[1];
@@ -19,8 +20,8 @@ const day = Astro.url.pathname.split("/")[1];
         <div
             class="relative w-96 h-96 border border-black flex items-center justify-center"
         >
-            <canvas id="follow" class="w-full h-full"></canvas>
-            <script src="../../scripts/follow.js"></script>
+            <canvas id="picture" class="w-full h-full"></canvas>
+            <script src="../../scripts/picture.js"></script>
         </div>
     </main>
 </Layout>
