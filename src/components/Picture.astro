@@ -1,0 +1,219 @@
+<canvas id="picture" width="380" height="380" class="w-full h-full"></canvas>
+
+<script>
+    import { onMount } from "solid-js";
+
+    const BLOB_STROKE_COLOR = "black";
+    const BLOB_STROKE_WIDTH = 2;
+    const BLOB_SHADOW_FILL_COLOR = "rgba(0, 0, 0, 0.3)";
+
+    let canvasElement;
+    let canvasContext;
+    const loadedImages = [];
+    let totalImagesLoaded = 0;
+    let animationState = null;
+    let stateElapsedTime = 0;
+    let blobScaleFactor = 0;
+    let blobNoiseOffset = 0;
+
+    const catImageUrls = [
+        "https://images.unsplash.com/photo-1571566882372-1598d88abd90?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "https://images.unsplash.com/photo-1568615944078-821ced977caa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fGNhdHxlbnwwfDF8MHx8fDI%3D",
+        "https://images.unsplash.com/photo-1518288774672-b94e808873ff?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2F0fGVufDB8MXwwfHx8Mg%3D%3D",
+        "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGNhdHxlbnwwfDF8MHx8fDI%3D",
+        "https://images.unsplash.com/photo-1516374348294-ce51573b0fb5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGNhdHxlbnwwfDF8MHx8fDI%3D",
+        "https://images.unsplash.com/photo-1557948206-7478d769f813?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzR8fGNhdHxlbnwwfDF8MHx8fDI%3D",
+        "https://images.unsplash.com/photo-1531040630173-7cfb894c8eaa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzV8fGNhdHxlbnwwfDF8MHx8fDI%3D",
+    ];
+    let activeImageIndex = Math.floor(Math.random() * catImageUrls.length);
+
+    onMount(() => {
+        canvasElement = document.getElementById("picture");
+        canvasContext = canvasElement.getContext("2d");
+
+        catImageUrls.forEach((url) => {
+            const image = new Image();
+            image.crossOrigin = "Anonymous";
+            image.onload = () => {
+                totalImagesLoaded++;
+                if (totalImagesLoaded === catImageUrls.length) {
+                    initializeAnimation();
+                }
+            };
+            image.src = url;
+            loadedImages.push(image);
+        });
+    });
+
+    function initializeAnimation() {
+        animationState = "intro";
+        stateElapsedTime = 0;
+
+        canvasElement.addEventListener("mousedown", () => {
+            if (!animationState) {
+                animationState = "shrinking";
+                stateElapsedTime = 0;
+            }
+        });
+
+        requestAnimationFrame(renderFrame);
+    }
+
+    function renderFrame() {
+        canvasContext.clearRect(
+            0,
+            0,
+            canvasElement.width,
+            canvasElement.height
+        );
+
+        if (animationState !== "holding") {
+            const canvasCenter = {
+                x: canvasElement.width / 2,
+                y: canvasElement.height / 2,
+            };
+            const blobRadius = (canvasElement.width / 2.4) * blobScaleFactor;
+
+            drawBlobShadow(canvasCenter, blobRadius);
+            drawImageOnBlob(canvasCenter, blobRadius);
+            drawBlobStroke(canvasCenter, blobRadius);
+        }
+
+        updateAnimationState();
+        requestAnimationFrame(renderFrame);
+    }
+
+    function drawBlobShadow(center, radius) {
+        canvasContext.fillStyle = BLOB_SHADOW_FILL_COLOR;
+        drawBlobShape(center.x + 10, center.y + 10, radius);
+        canvasContext.fill();
+    }
+
+    function drawImageOnBlob(center, radius) {
+        const currentImage = loadedImages[activeImageIndex];
+        const imageScaleFactor =
+            Math.max(
+                canvasElement.width / currentImage.width,
+                canvasElement.height / currentImage.height
+            ) * 1.2;
+        const scaledImageWidth = currentImage.width * imageScaleFactor;
+        const scaledImageHeight = currentImage.height * imageScaleFactor;
+
+        canvasContext.save();
+        canvasContext.beginPath();
+        drawBlobShape(center.x, center.y, radius);
+        canvasContext.clip();
+        canvasContext.drawImage(
+            currentImage,
+            0,
+            0,
+            currentImage.width,
+            currentImage.height,
+            center.x - scaledImageWidth / 2,
+            center.y - scaledImageHeight / 2,
+            scaledImageWidth,
+            scaledImageHeight
+        );
+        canvasContext.restore();
+    }
+
+    function drawBlobStroke(center, radius) {
+        canvasContext.strokeStyle = BLOB_STROKE_COLOR;
+        canvasContext.lineWidth = BLOB_STROKE_WIDTH;
+        drawBlobShape(center.x, center.y, radius);
+        canvasContext.stroke();
+    }
+
+    function drawBlobShape(cx, cy, radius) {
+        canvasContext.beginPath();
+        const angleStep = (Math.PI * 2) / 100;
+        for (let angle = 0; angle < Math.PI * 2; angle += angleStep) {
+            const radiusOffset = Math.sin(angle * 3 + blobNoiseOffset) * 5;
+            const x = cx + Math.cos(angle) * (radius + radiusOffset);
+            const y = cy + Math.sin(angle) * (radius + radiusOffset);
+            angle === 0
+                ? canvasContext.moveTo(x, y)
+                : canvasContext.lineTo(x, y);
+        }
+        canvasContext.closePath();
+    }
+
+    function updateAnimationState() {
+        const animationDuration = 500;
+        const deltaTime = 16;
+        blobNoiseOffset += 0.01;
+
+        switch (animationState) {
+            case "intro":
+                stateElapsedTime += deltaTime;
+                blobScaleFactor = easeOutBack(
+                    Math.min(stateElapsedTime / animationDuration, 1)
+                );
+                if (stateElapsedTime >= animationDuration) {
+                    animationState = null;
+                    blobScaleFactor = 1;
+                }
+                break;
+            case "shrinking":
+                stateElapsedTime += deltaTime;
+                blobScaleFactor = Math.max(
+                    0,
+                    1 -
+                        easeInBack(
+                            Math.min(stateElapsedTime / animationDuration, 1)
+                        )
+                );
+                if (stateElapsedTime >= animationDuration) {
+                    animationState = "holding";
+                    stateElapsedTime = 0;
+                    blobScaleFactor = 0;
+                    activeImageIndex =
+                        (activeImageIndex + 1) % loadedImages.length;
+                }
+                break;
+            case "holding":
+                stateElapsedTime += deltaTime;
+                if (stateElapsedTime >= 500) {
+                    animationState = "expanding";
+                    stateElapsedTime = 0;
+                }
+                break;
+            case "expanding":
+                stateElapsedTime += deltaTime;
+                blobScaleFactor = easeOutBack(
+                    Math.min(stateElapsedTime / animationDuration, 1)
+                );
+                if (stateElapsedTime >= animationDuration) {
+                    animationState = "settling";
+                    stateElapsedTime = 0;
+                }
+                break;
+            case "settling":
+                stateElapsedTime += deltaTime;
+                blobScaleFactor =
+                    1 +
+                    (blobScaleFactor - 1) *
+                        (1 - Math.min(stateElapsedTime / animationDuration, 1));
+                if (stateElapsedTime >= animationDuration) {
+                    animationState = null;
+                    blobScaleFactor = 1;
+                }
+                break;
+        }
+    }
+
+    function easeInBack(time) {
+        const overshoot = 1.70158;
+        return time * time * ((overshoot + 1) * time - overshoot);
+    }
+
+    function easeOutBack(time) {
+        const overshoot = 1.70158;
+        return 1 + --time * time * ((overshoot + 1) * time + overshoot);
+    }
+</script>
+<style>
+    canvas {
+        cursor: pointer;
+    }
+</style>
