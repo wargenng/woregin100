@@ -4,9 +4,11 @@ const STROKE_COLOR = "black";
 const STROKE_WIDTH = 2;
 const SHADOW_FILL_COLOR = new paper.Color(0, 0, 0, 0.3);
 
+const dpr = window.devicePixelRatio || 1;
 const canvas = document.getElementById("picture");
 canvas.width = 380;
 canvas.height = 380;
+
 paper.setup(canvas);
 const points = 5;
 
@@ -20,7 +22,7 @@ const imageUrls = [
     "https://images.unsplash.com/photo-1531040630173-7cfb894c8eaa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzV8fGNhdHxlbnwwfDF8MHx8fDI%3D",
 ];
 
-let currentImageIndex = Math.round(Math.random(0, 1) * imageUrls.length);
+let currentImageIndex = Math.round(Math.random(0, 1) * imageUrls.length) - 1;
 const images = [];
 let imagesLoaded = 0;
 
@@ -55,13 +57,11 @@ function startAnimation() {
 
     initializeBlob(clipPath, strokePath, shadowPath);
 
-    // Get the current image
     const img = images[currentImageIndex];
     const raster = new paper.Raster(img);
 
-    // Calculate the new height to maintain aspect ratio
-    const newWidth = canvas.width;
-    const newHeight = (canvas.width * img.height) / img.width;
+    const newWidth = canvas.width / dpr;
+    const newHeight = ((canvas.width / dpr) * img.height) / img.width;
     raster.size = new paper.Size(newWidth, newHeight);
 
     raster.position = paper.view.center;
@@ -96,10 +96,9 @@ function startAnimation() {
         initializeBlob(clipPath, strokePath, shadowPath);
         raster.position = paper.view.center;
 
-        // Recalculate raster size on resize
         const img = images[currentImageIndex];
-        const newWidth = canvas.width;
-        const newHeight = (canvas.width * img.height) / img.width;
+        const newWidth = canvas.width / dpr;
+        const newHeight = ((canvas.width / dpr) * img.height) / img.width;
         raster.size = new paper.Size(newWidth, newHeight);
     };
 }
@@ -176,10 +175,8 @@ function handleAnimation(event, raster, clipPath, strokePath) {
 
             const img = images[currentImageIndex];
             raster.image = img;
-
-            // Recalculate raster size based on new image
-            const newWidth = canvas.width;
-            const newHeight = (canvas.width * img.height) / img.width;
+            const newWidth = canvas.width / dpr;
+            const newHeight = ((canvas.width / dpr) * img.height) / img.width;
             raster.size = new paper.Size(newWidth, newHeight);
             raster.position = paper.view.center;
         }
