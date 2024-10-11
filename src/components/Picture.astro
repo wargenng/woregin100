@@ -1,8 +1,6 @@
 <canvas id="picture" width="380" height="380" class="w-full h-full"></canvas>
 
 <script>
-    import { onMount } from "solid-js";
-
     const BLOB_STROKE_COLOR = "black";
     const BLOB_STROKE_WIDTH = 2;
     const BLOB_SHADOW_FILL_COLOR = "rgba(0, 0, 0, 0.3)";
@@ -27,22 +25,20 @@
     ];
     let activeImageIndex = Math.floor(Math.random() * catImageUrls.length);
 
-    onMount(() => {
-        canvasElement = document.getElementById("picture");
-        canvasContext = canvasElement.getContext("2d");
+    canvasElement = document.getElementById("picture");
+    canvasContext = canvasElement.getContext("2d");
 
-        catImageUrls.forEach((url) => {
-            const image = new Image();
-            image.crossOrigin = "Anonymous";
-            image.onload = () => {
-                totalImagesLoaded++;
-                if (totalImagesLoaded === catImageUrls.length) {
-                    initializeAnimation();
-                }
-            };
-            image.src = url;
-            loadedImages.push(image);
-        });
+    catImageUrls.forEach((url) => {
+        const image = new Image();
+        image.crossOrigin = "Anonymous";
+        image.onload = () => {
+            totalImagesLoaded++;
+            if (totalImagesLoaded === catImageUrls.length) {
+                initializeAnimation();
+            }
+        };
+        image.src = url;
+        loadedImages.push(image);
     });
 
     function initializeAnimation() {
