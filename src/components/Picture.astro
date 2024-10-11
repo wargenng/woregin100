@@ -56,19 +56,24 @@
     }
 
     function renderFrame() {
+        canvasElement.width = canvasElement.getBoundingClientRect().width * devicePixelRatio;
+        canvasElement.height = canvasElement.getBoundingClientRect().height * devicePixelRatio;
+        canvasContext.scale(devicePixelRatio, devicePixelRatio);
+        const drawingRect = canvasElement.getBoundingClientRect();
+
         canvasContext.clearRect(
             0,
             0,
-            canvasElement.width,
-            canvasElement.height
+            drawingRect.width,
+            drawingRect.height
         );
 
         if (animationState !== "holding") {
             const canvasCenter = {
-                x: canvasElement.width / 2,
-                y: canvasElement.height / 2,
+                x: drawingRect.width / 2,
+                y: drawingRect.height / 2,
             };
-            const blobRadius = (canvasElement.width / 2.4) * blobScaleFactor;
+            const blobRadius = (drawingRect.width / 2.4) * blobScaleFactor;
 
             drawBlobShadow(canvasCenter, blobRadius);
             drawImageOnBlob(canvasCenter, blobRadius);
@@ -86,11 +91,12 @@
     }
 
     function drawImageOnBlob(center, radius) {
+      const drawingRect = canvasElement.getBoundingClientRect();
         const currentImage = loadedImages[activeImageIndex];
         const imageScaleFactor =
             Math.max(
-                canvasElement.width / currentImage.width,
-                canvasElement.height / currentImage.height
+                drawingRect.width / currentImage.width,
+                drawingRect.height / currentImage.height
             ) * 1.2;
         const scaledImageWidth = currentImage.width * imageScaleFactor;
         const scaledImageHeight = currentImage.height * imageScaleFactor;
