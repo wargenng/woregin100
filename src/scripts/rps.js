@@ -3,9 +3,11 @@ import * as PIXI from "pixi.js";
 async function initSimulation() {
     const app = new PIXI.Application();
     await app.init({
-        backgroundColor: "#f1f1ef",
         width: 380,
         height: 380,
+        resolution: window.devicePixelRatio || 1,
+        autoDensity: true,
+        backgroundColor: "#f1f1ef",
     });
     document.getElementById("rps").appendChild(app.canvas);
 
