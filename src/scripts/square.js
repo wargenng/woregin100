@@ -143,6 +143,16 @@ async function initGame() {
     if (resetButton) {
         resetButton.addEventListener("click", resetGame);
     }
+
+    const jumpButton = document.getElementById("jump");
+    if (jumpButton) {
+        jumpButton.addEventListener("click", () => {
+            if (!isJumping && !gameOver) {
+                velocityY = jumpForce;
+                isJumping = true;
+            }
+        });
+    }
 }
 
 initGame();

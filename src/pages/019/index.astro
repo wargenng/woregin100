@@ -22,10 +22,13 @@ const day = Astro.url.pathname.split("/")[1];
         >
             <script src="../../scripts/square.js"></script>
         </div>
-        <div class="w-96 text-black/50 flex gap-2 touch-manipulation">
-            <button class="hover:underline hover:text-black" id="reset"
-                >reset</button
-            >
+        <div
+            class="w-96 text-black/50 flex justify-center items-center relative"
+        >
+            <button class="absolute left-0 hover:text-black" id="reset">
+                reset
+            </button>
+            <button class="hover:text-black" id="jump"> jump </button>
         </div>
     </main>
 </Layout>
