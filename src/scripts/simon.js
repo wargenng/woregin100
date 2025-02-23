@@ -9,9 +9,11 @@ async function initSimon() {
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
     });
+    await PIXI.Assets.load("/fonts/ww.ttf");
     document.getElementById("simon").appendChild(app.canvas);
 
     const timerButton = document.getElementById("timer");
+    const scoreButton = document.getElementById("score");
 
     const buttonsData = [
         { id: 0, base: 0xff3b30, flash: 0xff6b5b },
@@ -85,8 +87,8 @@ async function initSimon() {
             text: message,
             style: {
                 fill: "#ffffff",
-                fontSize: 36,
-                fontFamily: "Arial",
+                fontSize: 28,
+                fontFamily: "ww",
             },
         });
         overlayText.anchor.set(0.5);
@@ -109,12 +111,15 @@ async function initSimon() {
     function startGame() {
         simonSequence = [];
         playerSequence = [];
+        scoreButton.textContent = "0";
         setTimeout(addStep, 1000);
     }
 
     function addStep() {
         const randomIndex = Math.floor(Math.random() * 4);
         simonSequence.push(randomIndex);
+        // Update score button (score is the number of steps completed)
+        scoreButton.textContent = simonSequence.length - 1;
         playSequence();
     }
 
@@ -190,6 +195,7 @@ async function initSimon() {
                 overlay = null;
             }
             const score = simonSequence.length - 1;
+            scoreButton.textContent = score;
             showOverlay(`SCORE: ${score}\nCLICK TO START`, true, startGame);
         }, 2000);
     }
