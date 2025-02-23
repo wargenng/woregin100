@@ -11,6 +11,8 @@ async function initSimon() {
     });
     document.getElementById("simon").appendChild(app.canvas);
 
+    const timerButton = document.getElementById("timer");
+
     const buttonsData = [
         { id: 0, base: 0xff3b30, flash: 0xff6b5b },
         { id: 1, base: 0x34c759, flash: 0x6cd98d },
@@ -43,6 +45,32 @@ async function initSimon() {
     let playerSequence = [];
     let awaitingInput = false;
     let overlay = null;
+    let processingInput = false;
+
+    let timerInterval = null;
+    let timeRemaining = 30;
+
+    function startTimer() {
+        timeRemaining = 30;
+        timerButton.textContent = timeRemaining;
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            timerButton.textContent = timeRemaining;
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                gameOver();
+            }
+        }, 1000);
+    }
+
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        timerButton.textContent = "";
+    }
 
     function showOverlay(message, clickable, callback) {
         overlay = new PIXI.Container();
@@ -91,6 +119,7 @@ async function initSimon() {
     }
 
     async function playSequence() {
+        stopTimer();
         awaitingInput = false;
         playerSequence = [];
         for (let i = 0; i < simonSequence.length; i++) {
@@ -98,6 +127,7 @@ async function initSimon() {
             await delay(300);
         }
         awaitingInput = true;
+        startTimer();
     }
 
     function flashButton(index) {
@@ -118,22 +148,39 @@ async function initSimon() {
     }
 
     async function onButtonClick(index) {
-        if (!awaitingInput) return;
+        if (!awaitingInput || processingInput) return;
+        processingInput = true;
         await flashButton(index);
         playerSequence.push(index);
         const currentIndex = playerSequence.length - 1;
         if (playerSequence[currentIndex] !== simonSequence[currentIndex]) {
+            processingInput = false;
             gameOver();
             return;
         }
         if (playerSequence.length === simonSequence.length) {
+            stopTimer();
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].clear();
+                buttons[i].rect(0, 0, 190, 190).fill(buttonsData[i].flash);
+            }
+            await delay(500);
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].clear();
+                buttons[i].rect(0, 0, 190, 190).fill(buttonsData[i].base);
+            }
             awaitingInput = false;
+            processingInput = false;
             await delay(500);
             addStep();
+        } else {
+            awaitingInput = true;
+            processingInput = false;
         }
     }
 
     function gameOver() {
+        stopTimer();
         awaitingInput = false;
         showOverlay("GAME OVER", false, null);
         setTimeout(() => {
