@@ -5,21 +5,20 @@ async function initMeterGame() {
     await app.init({
         width: 380,
         height: 380,
-        backgroundColor: 0x000000,
+        backgroundColor: "#f1f1ef",
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
     });
+    await PIXI.Assets.load("/fonts/ww.ttf");
     document.getElementById("meter").appendChild(app.canvas);
 
-    // Meter parameters
     const meterX = 50;
     const meterY = 40;
     const meterWidth = 50;
     const meterHeight = 300;
-    const targetZoneY = meterY + 120; // target zone from y=160...
-    const targetZoneHeight = 60; // ...to y=220
+    const targetZoneY = meterY + 120;
+    const targetZoneHeight = 60;
 
-    // Draw meter background (gray) and target zone (green) using PIXI.Graphics chaining style.
     const meterGraphics = new PIXI.Graphics()
         .rect(meterX, meterY, meterWidth, meterHeight)
         .fill(0xcccccc)
@@ -27,33 +26,29 @@ async function initMeterGame() {
         .fill(0x00ff00);
     app.stage.addChild(meterGraphics);
 
-    // Create the arrow (a white rectangle) that moves along the meter.
     const arrowHeight = 10;
     const arrow = new PIXI.Graphics()
         .rect(meterX, meterY, meterWidth, arrowHeight)
-        .fill(0xffffff);
+        .fill(0xff0000);
     app.stage.addChild(arrow);
 
-    let arrowSpeed = 300; // pixels per second
-    let arrowDirection = 1; // 1 for down, -1 for up
+    let arrowSpeed = 300;
+    let arrowDirection = 1;
     let arrowMoving = true;
 
-    // Update arrow position each frame.
     app.ticker.add((delta) => {
         if (!arrowMoving) return;
-        // delta is in 1/60th second increments.
-        const dt = delta / 60;
+        const dt = delta.deltaTime / 60;
         arrow.y += arrowSpeed * arrowDirection * dt;
-        if (arrow.y + arrowHeight >= meterY + meterHeight) {
-            arrow.y = meterY + meterHeight - arrowHeight;
+        if (arrow.y + arrowHeight >= meterHeight) {
+            arrow.y = meterHeight - arrowHeight;
             arrowDirection = -1;
-        } else if (arrow.y <= meterY) {
-            arrow.y = meterY;
+        } else if (arrow.y <= 0) {
+            arrow.y = 0;
             arrowDirection = 1;
         }
     });
 
-    // Stop button (assumed to be a DOM element with id "stop")
     const stopButton = document.getElementById("stop");
     stopButton.addEventListener("click", () => {
         if (arrowMoving) {
@@ -63,10 +58,10 @@ async function initMeterGame() {
     });
 
     function checkResult() {
-        // If the arrow is fully inside the target zone, it's a success.
+        const arrowCenter = arrow.y + arrowHeight / 2;
         if (
-            arrow.y >= targetZoneY &&
-            arrow.y + arrowHeight <= targetZoneY + targetZoneHeight
+            arrowCenter >= targetZoneY - meterY &&
+            arrowCenter <= targetZoneY - meterY + targetZoneHeight
         ) {
             showResult("SUCCESS!");
         } else {
@@ -75,10 +70,13 @@ async function initMeterGame() {
     }
 
     function showResult(message) {
-        const resultText = new PIXI.Text(message, {
-            fill: "#ffffff",
-            fontSize: 36,
-            fontFamily: "Arial",
+        const resultText = new PIXI.Text({
+            text: message,
+            style: {
+                fill: "#000000",
+                fontSize: 36,
+                fontFamily: "ww",
+            },
         });
         resultText.anchor.set(0.5);
         resultText.x = app.screen.width / 2;
