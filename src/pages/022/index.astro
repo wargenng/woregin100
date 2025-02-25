@@ -1,0 +1,30 @@
+---
+import Layout from "../../layouts/Layout.astro";
+export const frontmatter = {
+    pubDate: "2/24/2025",
+    title: "Fruit",
+    description: "mini game where you click on the fruit to gain points",
+};
+
+const day = Astro.url.pathname.split("/")[1];
+---
+
+<Layout
+    title=`${day} | ${frontmatter.title}`
+    description=`${frontmatter.description}`
+>
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-4"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+            id="fruit"
+        >
+            <script src="../../scripts/fruit.js"></script>
+        </div>
+        <div
+            class="w-96 text-black/50 flex justify-center items-center relative"
+        >
+        </div>
+    </main>
+</Layout>
