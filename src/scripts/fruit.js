@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-async function initGame() {
+async function initFruitNinja() {
     const app = new PIXI.Application();
     await app.init({
         width: 380,
@@ -13,7 +13,6 @@ async function initGame() {
 
     let points = 0;
     let lives = 3;
-    const plusOneMessages = [];
 
     const pointsDisplay = new PIXI.Text({
         text: `${points}`,
@@ -44,6 +43,7 @@ async function initGame() {
     const foodEmojis = ["🍎", "🍌", "🍇", "🍒", "🍉"];
     const bombEmoji = "💣";
     let activeItems = [];
+    let plusOneMessages = [];
 
     function spawnItem() {
         const isBomb = Math.random() < 0.2;
@@ -83,6 +83,7 @@ async function initGame() {
         } else if (item.type === "bomb") {
             lives--;
             updateLives();
+            showMinusOne(item.x, item.y);
             if (lives <= 0) {
                 gameOver();
             }
@@ -114,6 +115,23 @@ async function initGame() {
         plusOneMessages.push({ text: plusOne, lifetime: 1.0 });
     }
 
+    function showMinusOne(x, y) {
+        const minusOne = new PIXI.Text({
+            text: "-1",
+            style: {
+                fill: "#ff0000",
+                fontSize: 24,
+                fontFamily: "Arial",
+            },
+        });
+        minusOne.anchor.set(0.5);
+        minusOne.x = x;
+        minusOne.y = y;
+        minusOne.alpha = 1;
+        app.stage.addChild(minusOne);
+        plusOneMessages.push({ text: minusOne, lifetime: 1.0 });
+    }
+
     let spawnInterval = setInterval(spawnItem, 1000);
 
     function gameOver() {
@@ -126,7 +144,7 @@ async function initGame() {
             text: "GAME OVER\nCLICK TO RESTART",
             style: {
                 fill: "#ff0000",
-                fontSize: 30,
+                fontSize: 48,
                 fontFamily: "Arial",
             },
         });
@@ -181,4 +199,4 @@ async function initGame() {
     });
 }
 
-initGame();
+initFruitNinja();
