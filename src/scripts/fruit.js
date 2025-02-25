@@ -144,7 +144,7 @@ async function initFruitNinja() {
             text: "GAME OVER\nCLICK TO RESTART",
             style: {
                 fill: "#ff0000",
-                fontSize: 48,
+                fontSize: 32,
                 fontFamily: "Arial",
             },
         });
