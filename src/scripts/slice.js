@@ -16,14 +16,14 @@ async function initSliceGame() {
     const radius = 100;
     let currentLevel = 1;
     const maxLevel = 10;
-    const startSliceAngle = Math.PI / 2; // 1/4 of the circle
-    const endSliceAngle = 0.05; // Tiny sliver at level 10
+    const startSliceAngle = Math.PI / 2;
+    const endSliceAngle = 0.05;
     let currentSliceAngle =
         startSliceAngle -
         (currentLevel - 1) *
             ((startSliceAngle - endSliceAngle) / (maxLevel - 1));
-    let rotationSpeed = 0.05; // Start speed
-    const maxSpeed = 0.15; // Max speed at level 10
+    let rotationSpeed = 0.05;
+    const maxSpeed = 0.15;
 
     const levelDisplay = new PIXI.Text({
         text: `Level: ${currentLevel}`,
@@ -77,8 +77,7 @@ async function initSliceGame() {
     let rotationActive = true;
     let gameEnded = false;
 
-    const stopButton = document.getElementById("stop");
-    stopButton.addEventListener("click", () => {
+    app.canvas.addEventListener("click", () => {
         if (!rotationActive) return;
         rotationActive = false;
         checkResult();
@@ -147,7 +146,7 @@ async function initSliceGame() {
             setTimeout(() => {
                 app.stage.removeChild(mainText);
                 advanceLevel();
-            }, 2000);
+            }, 1000);
         }
     }
 
@@ -159,7 +158,7 @@ async function initSliceGame() {
             (currentLevel - 1) *
                 ((startSliceAngle - endSliceAngle) / (maxLevel - 1));
         rotationSpeed =
-            0.03 + (currentLevel - 1) * ((maxSpeed - 0.03) / (maxLevel - 1)); // Speed increases with level
+            0.03 + (currentLevel - 1) * ((maxSpeed - 0.03) / (maxLevel - 1));
         drawSlice();
         sliceContainer.rotation = 0;
         rotationActive = true;
