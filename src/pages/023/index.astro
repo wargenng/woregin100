@@ -1,0 +1,34 @@
+---
+import Layout from "../../layouts/Layout.astro";
+export const frontmatter = {
+    pubDate: "2/23/2025",
+    title: "Slice",
+    description:
+        "similar to the meter game, but rather than a meter is a circle that you need to stop",
+};
+
+const day = Astro.url.pathname.split("/")[1];
+---
+
+<Layout
+    title=`${day} | ${frontmatter.title}`
+    description=`${frontmatter.description}`
+>
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-4"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+            id="slice"
+        >
+            <script src="../../scripts/slice.js"></script>
+        </div>
+        <div
+            class="w-96 text-black/50 flex justify-center items-center relative"
+        >
+            <button class="absolute left-0" id="score"></button>
+            <button class="" id="stop">stop</button>
+            <button class="absolute right-0" id="timer"></button>
+        </div>
+    </main>
+</Layout>
