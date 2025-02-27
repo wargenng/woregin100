@@ -41,8 +41,8 @@ async function initCardMatchingGame() {
         const cardHeight = 120;
         const cardSpacingX = 10;
         const cardSpacingY = 10;
-        const cardRadius = 12; // Rounded corner radius
-        const strokeWidth = 2; // Thin black stroke
+        const cardRadius = 12;
+        const strokeWidth = 2;
         const startX =
             (app.screen.width -
                 (4 * (cardWidth + cardSpacingX) - cardSpacingX)) /
@@ -54,18 +54,14 @@ async function initCardMatchingGame() {
 
         function createCard(index, suit) {
             const card = new PIXI.Container();
-
-            // Light grey back with rounded corners and black stroke
             const back = new PIXI.Graphics()
                 .roundRect(0, 0, cardWidth, cardHeight, cardRadius)
-                .fill(0xd3d3d3) // Light grey
-                .stroke({ width: strokeWidth, color: 0x000000 }); // Black stroke
-
-            // White front with rounded corners and black stroke
+                .fill(0xd3d3d3)
+                .stroke({ width: strokeWidth, color: 0x000000 });
             const front = new PIXI.Graphics()
                 .roundRect(0, 0, cardWidth, cardHeight, cardRadius)
-                .fill(0xffffff) // White
-                .stroke({ width: strokeWidth, color: 0x000000 }); // Black stroke
+                .fill(0xffffff)
+                .stroke({ width: strokeWidth, color: 0x000000 });
 
             const face = new PIXI.Text({
                 text: suit,
@@ -84,7 +80,7 @@ async function initCardMatchingGame() {
             card.interactive = true;
             card.buttonMode = true;
             card.x = startX + (index % 4) * (cardWidth + cardSpacingX);
-            card.y = -150; // Start off-screen for animation
+            card.y = -150;
             card.targetY =
                 startY + Math.floor(index / 4) * (cardHeight + cardSpacingY);
             card.on("pointerdown", () =>
