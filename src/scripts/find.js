@@ -193,6 +193,7 @@ async function initFindGame() {
             boardContainer.once("pointerdown", () => {
                 boardContainer.interactive = false;
                 currentRound = 1;
+                updateRoundDisplay();
                 showInitialTarget();
             });
         }
