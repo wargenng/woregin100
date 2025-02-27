@@ -10,14 +10,14 @@ async function initCardMatchingGame() {
         autoDensity: true,
     });
 
-    document.getElementById("match").innerHTML = ""; // Clears previous game canvas
+    document.getElementById("match").innerHTML = "";
     document.getElementById("match").appendChild(app.canvas);
 
     let suits = ["♠️", "♥️", "♦️", "♣️"];
     let deck, cards, flippedCards, matchedPairs, lives, livesDisplay;
 
     function startGame() {
-        app.stage.removeChildren(); // Clear all objects without removing the canvas
+        app.stage.removeChildren();
         deck = [...suits, ...suits].sort(() => Math.random() - 0.5);
         cards = [];
         flippedCards = [];
@@ -27,7 +27,7 @@ async function initCardMatchingGame() {
         livesDisplay = new PIXI.Text({
             text: `❤️ ❤️ ❤️`,
             style: {
-                fill: "#000000",
+                fill: "#ffffff",
                 fontSize: 24,
                 fontFamily: "Arial",
             },
@@ -41,6 +41,8 @@ async function initCardMatchingGame() {
         const cardHeight = 120;
         const cardSpacingX = 10;
         const cardSpacingY = 10;
+        const cardRadius = 12; // Rounded corner radius
+        const strokeWidth = 2; // Thin black stroke
         const startX =
             (app.screen.width -
                 (4 * (cardWidth + cardSpacingX) - cardSpacingX)) /
@@ -52,13 +54,23 @@ async function initCardMatchingGame() {
 
         function createCard(index, suit) {
             const card = new PIXI.Container();
+
+            // Light grey back with rounded corners and black stroke
             const back = new PIXI.Graphics()
-                .rect(0, 0, cardWidth, cardHeight)
-                .fill(0x000000);
+                .roundRect(0, 0, cardWidth, cardHeight, cardRadius)
+                .fill(0xd3d3d3) // Light grey
+                .stroke({ width: strokeWidth, color: 0x000000 }); // Black stroke
+
+            // White front with rounded corners and black stroke
+            const front = new PIXI.Graphics()
+                .roundRect(0, 0, cardWidth, cardHeight, cardRadius)
+                .fill(0xffffff) // White
+                .stroke({ width: strokeWidth, color: 0x000000 }); // Black stroke
+
             const face = new PIXI.Text({
                 text: suit,
                 style: {
-                    fill: "#ffffff",
+                    fill: "#000000",
                     fontSize: 48,
                     fontFamily: "Arial",
                 },
@@ -68,26 +80,30 @@ async function initCardMatchingGame() {
             face.y = cardHeight / 2;
             face.visible = false;
 
-            card.addChild(back, face);
+            card.addChild(front, back, face);
             card.interactive = true;
             card.buttonMode = true;
             card.x = startX + (index % 4) * (cardWidth + cardSpacingX);
-            card.y =
+            card.y = -150; // Start off-screen for animation
+            card.targetY =
                 startY + Math.floor(index / 4) * (cardHeight + cardSpacingY);
-            card.on("pointerdown", () => flipCard(card, suit, face, back));
+            card.on("pointerdown", () =>
+                flipCard(card, suit, face, back, front)
+            );
 
             app.stage.addChild(card);
-            return { container: card, suit, face, back };
+            return { container: card, suit, face, back, front };
         }
 
-        function flipCard(card, suit, face, back) {
+        function flipCard(card, suit, face, back, front) {
             if (flippedCards.length < 2 && !face.visible) {
                 face.visible = true;
                 back.visible = false;
-                flippedCards.push({ card, suit, face, back });
+                front.visible = true;
+                flippedCards.push({ card, suit, face, back, front });
 
                 if (flippedCards.length === 2) {
-                    setTimeout(checkMatch, 1000);
+                    setTimeout(checkMatch, 700);
                 }
             }
         }
@@ -103,8 +119,10 @@ async function initCardMatchingGame() {
             } else {
                 first.face.visible = false;
                 first.back.visible = true;
+                first.front.visible = false;
                 second.face.visible = false;
                 second.back.visible = true;
+                second.front.visible = false;
                 lives--;
                 updateLives();
                 if (lives <= 0) {
@@ -140,9 +158,28 @@ async function initCardMatchingGame() {
         }
 
         deck.forEach((suit, index) => cards.push(createCard(index, suit)));
+
+        function dealCards(index = 0) {
+            if (index >= cards.length) return;
+            let card = cards[index].container;
+            let animationSpeed = 12;
+
+            function dropAnimation() {
+                if (card.y < card.targetY) {
+                    card.y += animationSpeed;
+                    requestAnimationFrame(dropAnimation);
+                } else {
+                    setTimeout(() => dealCards(index + 1), 50);
+                }
+            }
+
+            dropAnimation();
+        }
+
+        dealCards();
     }
 
-    startGame(); // Start the game
+    startGame();
 }
 
 initCardMatchingGame();
