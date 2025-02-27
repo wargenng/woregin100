@@ -108,7 +108,7 @@ async function initFindGame() {
             globalTimer.text = `${timeRemaining}`;
             if (timeRemaining <= 0) {
                 clearInterval(roundTimer);
-                gameOver("Time's up!");
+                gameOver("Time's up!\nTarget: " + targetEmoji);
             }
         }, 1000);
     }
@@ -149,7 +149,7 @@ async function initFindGame() {
             } else {
                 if (globalTimer.parent) boardContainer.removeChild(globalTimer);
                 setTimeout(() => {
-                    gameOver(`Wrong! Target: ${targetEmoji}`);
+                    gameOver(`Wrong!\nTarget: ${targetEmoji}`);
                 }, 300);
             }
         });
