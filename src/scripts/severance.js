@@ -22,23 +22,39 @@ async function initNumberMatrix() {
     const startY = (app.screen.height - rows * cellSize) / 2;
 
     const cellObjects = [];
+    const radius = 100;
+    const minSize = 15;
+    const maxSize = 36;
+
+    const maxDisplacement = 5;
+    const maxSpeed = 0.15;
 
     function createCell(row, col) {
         const digit = Math.floor(Math.random() * 10).toString();
         const cellText = new PIXI.Text({
             text: digit,
-            style: { fill: "#000000", fontSize: 15, fontFamily: "Arial" },
+            style: { fill: "#000000", fontSize: minSize, fontFamily: "Arial" },
         });
         cellText.anchor.set(0.5);
-        cellText.ox = startX + col * cellSize + cellSize / 2; // Original X
-        cellText.oy = startY + row * cellSize + cellSize / 2; // Original Y
+        cellText.ox = startX + col * cellSize + cellSize / 2;
+        cellText.oy = startY + row * cellSize + cellSize / 2;
         cellText.x = cellText.ox;
         cellText.y = cellText.oy;
 
-        // Random velocity in x, y
-        const maxSpeed = 0.5;
         cellText.vx = (Math.random() * 2 - 1) * maxSpeed;
         cellText.vy = (Math.random() * 2 - 1) * maxSpeed;
+        cellText.locked = false;
+        cellText.interactive = true;
+        cellText.buttonMode = true;
+        cellText.on("pointerdown", () => {
+            cellText.locked = !cellText.locked;
+            if (cellText.locked) {
+                cellText.style.fontSize = maxSize;
+            } else {
+                cellText.style.fontSize = minSize;
+            }
+        });
+
         gridContainer.addChild(cellText);
         cellObjects.push(cellText);
     }
@@ -49,14 +65,11 @@ async function initNumberMatrix() {
         }
     }
 
-    const radius = 100;
-    const minSize = 15;
-    const maxSize = 36;
-
     app.stage.interactive = true;
     app.stage.on("pointermove", (event) => {
         const mousePos = event.data.global;
         for (const cell of cellObjects) {
+            if (cell.locked) continue;
             const dx = mousePos.x - cell.x;
             const dy = mousePos.y - cell.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
@@ -72,22 +85,20 @@ async function initNumberMatrix() {
 
     app.ticker.add(() => {
         for (const cell of cellObjects) {
+            if (cell.locked) continue;
+
             cell.x += cell.vx;
             cell.y += cell.vy;
 
-            // maxDisplacement = how far from (ox, oy) we allow
-            const maxDisplacement = 5;
             const dx = cell.x - cell.ox;
             const dy = cell.y - cell.oy;
             const distSq = dx * dx + dy * dy;
 
-            // If cell goes too far from original spot, reverse or randomize velocity
             if (distSq > maxDisplacement * maxDisplacement) {
                 cell.x -= cell.vx;
                 cell.y -= cell.vy;
-                // Reverse velocity or randomize it
-                cell.vx = -cell.vx * (0.5 + Math.random() * 0.5);
-                cell.vy = -cell.vy * (0.5 + Math.random() * 0.5);
+                cell.vx = -cell.vx;
+                cell.vy = -cell.vy;
             }
         }
     });
