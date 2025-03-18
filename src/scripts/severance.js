@@ -12,6 +12,8 @@ async function initNumberMatrix() {
     document.getElementById("severance").innerHTML = "";
     document.getElementById("severance").appendChild(app.canvas);
 
+    const deleteButton = document.getElementById("delete");
+
     const gridContainer = new PIXI.Container();
     app.stage.addChild(gridContainer);
 
@@ -36,6 +38,7 @@ async function initNumberMatrix() {
             style: { fill: "#000000", fontSize: minSize, fontFamily: "Arial" },
         });
         cellText.anchor.set(0.5);
+
         cellText.ox = startX + col * cellSize + cellSize / 2;
         cellText.oy = startY + row * cellSize + cellSize / 2;
         cellText.x = cellText.ox;
@@ -43,16 +46,15 @@ async function initNumberMatrix() {
 
         cellText.vx = (Math.random() * 2 - 1) * maxSpeed;
         cellText.vy = (Math.random() * 2 - 1) * maxSpeed;
-        cellText.locked = false;
+
+        cellText.selected = false;
+        cellText.deletingPhase = 0;
+
         cellText.interactive = true;
         cellText.buttonMode = true;
         cellText.on("pointerdown", () => {
-            cellText.locked = !cellText.locked;
-            if (cellText.locked) {
-                cellText.style.fontSize = maxSize;
-            } else {
-                cellText.style.fontSize = minSize;
-            }
+            cellText.selected = !cellText.selected;
+            cellText.style.fontSize = cellText.selected ? maxSize : minSize;
         });
 
         gridContainer.addChild(cellText);
@@ -69,7 +71,7 @@ async function initNumberMatrix() {
     app.stage.on("pointermove", (event) => {
         const mousePos = event.data.global;
         for (const cell of cellObjects) {
-            if (cell.locked) continue;
+            if (cell.deletingPhase !== 0 || cell.selected) continue;
             const dx = mousePos.x - cell.x;
             const dy = mousePos.y - cell.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
@@ -85,20 +87,41 @@ async function initNumberMatrix() {
 
     app.ticker.add(() => {
         for (const cell of cellObjects) {
-            if (cell.locked) continue;
+            if (cell.deletingPhase === 0 && !cell.selected) {
+                cell.x += cell.vx;
+                cell.y += cell.vy;
+                const dx = cell.x - cell.ox;
+                const dy = cell.y - cell.oy;
+                const distSq = dx * dx + dy * dy;
+                if (distSq > maxDisplacement * maxDisplacement) {
+                    cell.x -= cell.vx;
+                    cell.y -= cell.vy;
+                    cell.vx = -cell.vx;
+                    cell.vy = -cell.vy;
+                }
+            } else if (cell.deletingPhase === 2) {
+                cell.x += cell.vx;
+                cell.y += cell.vy;
+            }
+        }
 
-            cell.x += cell.vx;
-            cell.y += cell.vy;
+        for (let i = cellObjects.length - 1; i >= 0; i--) {
+            const cell = cellObjects[i];
+            if (cell.deletingPhase === 2) {
+                if (cell.x < -50 || cell.y > app.screen.height + 50) {
+                    gridContainer.removeChild(cell);
+                    cellObjects.splice(i, 1);
+                }
+            }
+        }
+    });
 
-            const dx = cell.x - cell.ox;
-            const dy = cell.y - cell.oy;
-            const distSq = dx * dx + dy * dy;
-
-            if (distSq > maxDisplacement * maxDisplacement) {
-                cell.x -= cell.vx;
-                cell.y -= cell.vy;
-                cell.vx = -cell.vx;
-                cell.vy = -cell.vy;
+    deleteButton.addEventListener("click", () => {
+        for (const cell of cellObjects) {
+            if (cell.selected && cell.deletingPhase === 0) {
+                cell.deletingPhase = 2;
+                cell.vx = -(4 + Math.random() * 4);
+                cell.vy = 4 + Math.random() * 4;
             }
         }
     });
