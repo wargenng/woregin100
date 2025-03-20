@@ -1,0 +1,31 @@
+---
+import Layout from "../../layouts/Layout.astro";
+export const frontmatter = {
+    pubDate: "3/20/2025",
+    title: "Segment",
+    description: "creating shuffled patterns on a 16x16 grid",
+};
+
+const day = Astro.url.pathname.split("/")[1];
+---
+
+<Layout
+    title=`${day} | ${frontmatter.title}`
+    description=`${frontmatter.description}`
+>
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-4"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+            id="segment"
+        >
+            <script src="../../scripts/segment.js"></script>
+        </div>
+        <div
+            class="w-96 text-black/50 flex justify-center items-center relative"
+        >
+            <button class="absolute left-0" id="randomize">🔀</button>
+        </div>
+    </main>
+</Layout>
