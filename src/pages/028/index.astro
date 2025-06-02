@@ -1,0 +1,98 @@
+---
+import Layout from "../../layouts/Layout.astro";
+export const frontmatter = {
+    pubDate: "6/2/2025",
+    title: "Drop",
+    description: "simple drop game using matter js",
+};
+
+const day = Astro.url.pathname.split("/")[1];
+---
+
+<Layout
+    title=`${day} | ${frontmatter.title}`
+    description=`${frontmatter.description}`
+>
+    <main
+        class="w-screen h-dvh flex items-center justify-center flex-col gap-2"
+    >
+        <div
+            class="relative w-96 h-96 border border-black flex items-center justify-center"
+            id="drop"
+        >
+            <div class="absolute top-2 left-2 text-black/50" id="score">
+                Score: 0
+            </div>
+            <div class="absolute top-2 right-2 text-black/50" id="timer">
+                Time: 20
+            </div>
+            <div
+                class="absolute bottom-2 right-2 text-black/50"
+                id="ball-counter"
+            >
+                Balls: 50
+            </div>
+            <div id="background-timer" class="hidden">10</div>
+            <!-- Start Screen -->
+            <div
+                id="start-screen"
+                class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center gap-4 p-8 text-center"
+            >
+                <h2 class="text-2xl font-bold">Drop Game</h2>
+                <p class="text-black/70">
+                    Click anywhere to drop balls into the moving containers to
+                    score points.
+                    <br /><br />
+                    You have 20 seconds to score as many balls as possible!
+                    <br /><br />
+                    Win by scoring all 50 balls before time runs out!
+                </p>
+                <button
+                    id="start-button"
+                    class="px-4 py-2 bg-black text-white rounded hover:bg-black/80"
+                >
+                    Start Game
+                </button>
+            </div>
+            <!-- End Screen -->
+            <div
+                id="end-screen"
+                class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center gap-4 p-8 text-center hidden"
+            >
+                <h2 class="text-2xl font-bold">Game Over</h2>
+                <p id="end-message" class="text-black/70">
+                    You scored <span id="final-score">0</span> out of 50 balls!
+                </p>
+                <p class="text-black/70">
+                    Best Score: <span id="best-score">0</span>
+                </p>
+                <button
+                    id="restart-button"
+                    class="px-4 py-2 bg-black text-white rounded hover:bg-black/80"
+                >
+                    Play Again
+                </button>
+            </div>
+        </div>
+        <div class="w-96 text-black/50 flex gap-2 touch-manipulation">
+            <button class="hover:underline hover:text-black" id="restart"
+                >reset</button
+            >
+        </div>
+    </main>
+    <script src="./_scripts/drop.js"></script>
+</Layout>
+
+<style>
+    #background-timer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 200px;
+        font-weight: bold;
+        color: rgba(128, 128, 128, 0.1);
+        z-index: 0;
+        pointer-events: none;
+    }
+</style>
