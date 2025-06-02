@@ -8,12 +8,12 @@ const CONTAINER_WIDTH = 100;
 const CONTAINER_HEIGHT = 100;
 const CONTAINER_WALL_THICKNESS = 5;
 const CONTAINER_GAP = 60;
-const CONTAINER_Y = canvasSize - 80;
+const CONTAINER_Y = canvasSize - 40;
 const BALL_RADIUS = 10;
 const TUBE_WIDTH = 40;
 const TUBE_HEIGHT = 80;
-const BALL_SPAWN_Y = 50;
-const TUBE_TOP_Y = 20;
+const BALL_SPAWN_Y = 100;
+const TUBE_TOP_Y = 70;
 const BUTTON_WIDTH = 80;
 const BUTTON_HEIGHT = 40;
 const BUTTON_Y = canvasSize - BUTTON_HEIGHT - 20;
@@ -203,7 +203,7 @@ function createContainer(x) {
 }
 
 function createBall(color) {
-    return Matter.Bodies.circle(canvasSize / 2, 50, BALL_RADIUS, {
+    return Matter.Bodies.circle(canvasSize / 2, BALL_SPAWN_Y, BALL_RADIUS, {
         restitution: 0.8,
         friction: 0.1,
         density: 0.001,
